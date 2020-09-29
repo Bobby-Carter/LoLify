@@ -1,2 +1,2 @@
-# Playlist_Transfer
-Solo project to copy playlists from a user's Spotify account to their Apple Music account
+# LoLify
+Solo project to create a Spotify playlist with music tailored to a user's League of Legends performance.
