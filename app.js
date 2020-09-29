@@ -1,6 +1,6 @@
 var express = require('express');
 var querystring = require('querystring');
-var opn = require('opn');
+var opn = require('open');
 var fs = require('fs');
 
 var client_id = '62c9c6e0e0dd474b935452ba8676b2ec';
@@ -25,4 +25,4 @@ app.get('/callback', function(req, res) {
 
 app.listen(8080);
 
-opn('http://localhost:8080/spotify', {app: 'chrome'});
+opn('http://localhost:8080/spotify');

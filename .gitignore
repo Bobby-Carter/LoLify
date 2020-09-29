@@ -1,0 +1,4 @@
+# npm and package lock for 'express' and 'open' packages #
+##########################################################
+node_modules/
+package-lock.json
