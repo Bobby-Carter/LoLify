@@ -75,7 +75,7 @@ app.get('/getSummoner', function(req, res) {
     
     //When no more chunks left
     response.on('end', function () {
-      res.send(data); //Send complete data to localhost/getSummoner route
+      res.send(JSON.parse(data).accountId); //Send account Id to localhost/getSummoner route
     });
   });
   request.end();
