@@ -2,12 +2,29 @@ var express = require('express');
 var querystring = require('querystring');
 var opn = require('open');
 var fs = require('fs');
+var https = require('https')
 
 var client_id = '62c9c6e0e0dd474b935452ba8676b2ec';
 var redirect_uri = 'http://localhost:8080/callback';
 
+var riotAPIKey = 'RGAPI-b52ea49e-78a6-44ed-8104-84cecf43f558';
+var riotAccountId = 'start';
+
 var app = express();
 
+
+
+riotCallback = function(res) {
+  let data = '';
+  res.on('data', function (chunk) {
+    data += chunk;
+  });
+    
+  res.on('end', function () {
+    console.log(data);
+    riotAccountId = data;
+  });
+}
 
 //Home page
 app.get('/', function(req, res) {
@@ -29,10 +46,54 @@ app.get('/spotify', function(req, res) {
 });
 
 
-
 //Page with spotify access token in the url as a #fragment
 app.get('/callback', function(req, res) {
   res.sendFile('callback.html', {root: __dirname});
+});
+
+
+//Route that handles Riot games API calls and returns relevant information
+app.get('/getSummoner', function(req, res) {
+  
+  //Configure options/setup request to Riot games API
+  let url = new URL('http://localhost:8080' + req.url).searchParams;
+  let options = {
+    host: 'na1.api.riotgames.com', 
+    path: '/lol/summoner/v4/summoners/by-name/' +
+      encodeURI(url.get('summonername')) +
+      '?api_key=' + riotAPIKey,
+    method: 'GET'
+  };
+  
+  //Make request to Riot games API
+  const request = https.request(options, (response) => {
+    //Receive chunks of data and append them to string
+    let data = '';
+    response.on('data', function (chunk) {
+      data += chunk;
+    });
+    
+    //When no more chunks left
+    response.on('end', function () {
+      res.send(data); //Send complete data to localhost/getSummoner route
+    });
+  });
+  request.end();
+  
+  
+  /* LEGACY
+  let url = new URL('http://localhost:8080' + req.url).searchParams;
+  
+  res.redirect('https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-name/' +
+    encodeURI(url.get('summonername')) +
+    '?api_key=' + riotAPIKey
+  );
+  
+  //console.log();
+  
+  //res.redirect('/home');
+  */
+  
 });
 
 
